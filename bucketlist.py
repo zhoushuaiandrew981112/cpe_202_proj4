@@ -16,7 +16,8 @@ class CityNode:
         self.airport = None
         self.distance = None
         self.parent = None
-        self.b_factor = 0
+        self.b_factor_ne_sw = 0
+        self.b_factor_se_nw = 0
         self.node_height = 1
 
     """
@@ -28,7 +29,7 @@ class CityNode:
        - new is south of old: new.lat < old.lat                           |
        - old is south of new: old.lat < new.lat                           |
     * The GREATER the lon, the more EAST it is          W-|------------------------------|-E   <-- lon axis
-       - new is east of old: new.lon > old.lon          -150 deg          |0 deg        150 deg
+       - new is east of old: new.lon > old.lon          -180 deg          |0 deg        180 deg
        - old is east of new: old.lon > new.lon                            |
     * The SMALLER the lon, the more WEST it is                            |
        - new is west of old: new.lon < old.lon                            |
@@ -51,10 +52,68 @@ class CityNode:
 
     def is_sw_of_self(self, new):
         return new.lat < self.lat and new.lon < self.lon
-        
 
-    def add_city(self, node)
 
+    def has_no_child(self):
+        ne = self.children["ne"] == None
+        nw = self.children["nw"] == None
+        se = self.children["se"] == None
+        sw = self.children["sw"] == None
+        return ne and nw and se and sw
+
+
+    def has_child_ne_sw(self):
+        ne = self.children["ne"] != None
+        sw = self.children["sw"] != None
+        return ne and sw
+
+
+    def has_child_nw_se(self):
+        nw = self.children["nw"] != None
+        se = self.children["se"] != None
+        return nw and se
+
+
+    def rebalance(self, node):
+        if node.has_no_child():
+            self.rebalance(node.parent)
+        else:    
+            pass
+
+
+ 
+    """
+    def insert(node, c_node):
+        if c_node.is_ne_of_self(node):
+             if c_node.children["ne"] != None:
+                 self.insert(node, c_node.children["ne"])
+             else:
+                 c_node.children["ne"] = node
+                 node.parent = c_node
+        elif c_node.is_nw_of_self(node):
+             if c_node.children["nw"] != None:
+                 self.insert(node, c_node.children["nw"])
+             else:
+                 c_node.children["nw"] = node
+                 node.parent = c_node
+        elif c_node.is_se_of_self(node):
+             if c_node.children["se"] != None:
+                 self.insert(node, c_node.children["se"])
+             else:
+                 c_node.children["se"] = node
+                 node.parent = c_node
+        elif c_node.is_sw_of_self(node):
+             if c_node.children["sw"] != None:
+                 self.insert(node, c_node.children["sw"])
+             else:
+                 c_node.children["sw"] = node
+                 node.parent = c_node
+
+
+
+    def add_city(self, node):
+        self.insert(node, self)
+    """            
 
 
 

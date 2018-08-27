@@ -15,7 +15,8 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(c_node.airport, None)
         self.assertEqual(c_node.distance, None)
         self.assertEqual(c_node.parent, None)
-        self.assertEqual(c_node.b_factor, 0)
+        self.assertEqual(c_node.b_factor_ne_sw, 0)
+        self.assertEqual(c_node.b_factor_se_nw, 0)
         self.assertEqual(c_node.node_height, 1)
 
         c_node = CityNode("San Francisco", "CC", 33, 44)
@@ -27,7 +28,8 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(c_node.airport, None)
         self.assertEqual(c_node.distance, None)
         self.assertEqual(c_node.parent, None)
-        self.assertEqual(c_node.b_factor, 0)
+        self.assertEqual(c_node.b_factor_ne_sw, 0)
+        self.assertEqual(c_node.b_factor_se_nw, 0)
         self.assertEqual(c_node.node_height, 1)
 
         c_node = CityNode("Los Angeles", "CC", 55, 66)
@@ -39,7 +41,8 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(c_node.airport, None)
         self.assertEqual(c_node.distance, None)
         self.assertEqual(c_node.parent, None)
-        self.assertEqual(c_node.b_factor, 0)
+        self.assertEqual(c_node.b_factor_ne_sw, 0)
+        self.assertEqual(c_node.b_factor_se_nw, 0)
         self.assertEqual(c_node.node_height, 1)
 
     def test_city_location_comparason(self):
@@ -62,6 +65,17 @@ class TestBucketeList(unittest.TestCase):
         self.assertFalse(c_se.is_sw_of_self(c_nw))
         self.assertFalse(c_nw.is_ne_of_self(c_se))
         self.assertFalse(c_ne.is_nw_of_self(c_sw))
+
+        self.assertTrue(c_ne.has_no_child())
+        self.assertTrue(c_nw.has_no_child())
+        self.assertTrue(c_se.has_no_child())
+        self.assertTrue(c_sw.has_no_child())
+
+        self.assertFalse(c_ne.has_child_ne_sw())
+        self.assertFalse(c_nw.has_child_ne_sw())
+        self.assertFalse(c_se.has_child_nw_se())
+        self.assertFalse(c_sw.has_child_nw_se())
+
 
     def test_CountryTable_hash(self):
         size = 128515
