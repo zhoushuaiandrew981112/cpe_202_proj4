@@ -17,8 +17,8 @@ class CityNode:
         self.distance = None
         self.parent = None
         self.b_factor_ne_sw = 0
-        self.b_factor_se_nw = 0
-        self.node_height = 1
+        self.b_factor_nw_se = 0
+        self.height = 1
 
     """
                                                             lat axis -->  N
@@ -36,7 +36,13 @@ class CityNode:
        - old is west of new: old.lon < new.lon            SW             --- -90 deg     SE
                                                                           |
                                                                           S
-    """
+                   (node)
+                  / | |  \           * b_factor = right node height minus left node height
+                 / /   \  \          * b_factor_ne_sw = sw.height - ne.height
+                /  |   |   \         * b_factor_nw_se = se.height - nw.height
+              (ne  sw)(nw  se)           * b_factor > 1   :  right heavy -> left  rotation 
+                                         * b_factor < -1  :  left  heavy -> right rotation
+    """ 
 
     def is_ne_of_self(self, new):
         return new.lat > self.lat and new.lon > self.lon
@@ -74,11 +80,31 @@ class CityNode:
         return nw and se
 
 
+    def refresh_b_factor_ne_sw(self):
+        sw = self.children["sw"]
+        ne = self.children["ne"]
+        if sw != None and ne != None:
+            self.b_factor_ne_sw = sw.height - ne.height
+
+
+    def refresh_b_factor_nw_se(self):
+        se = self.children["se"]
+        nw = self.children["nw"]
+        if se != None and nw != None:
+            self.b_factor_nw_se = se.height - nw.height
+
+
+    def refresh_all_b_factor(self):
+        self.refresh_b_factor_ne_sw()
+        self.refresh_b_factor_nw_se()
+
+
     def rebalance(self, node):
         if node.has_no_child():
             self.rebalance(node.parent)
         else:    
             pass
+
 
 
  

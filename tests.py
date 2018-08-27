@@ -6,6 +6,16 @@ import unittest
 class TestBucketeList(unittest.TestCase):
 
     def test_CityNode_init(self):
+
+        ne = CityNode("ne", "cc", 0, 0)
+        ne.height = 1
+        sw = CityNode("sw", "cc", 0, 0)
+        sw.height = 2
+        nw = CityNode("nw", "cc", 0, 0)
+        nw.height = 2
+        se = CityNode("se", "cc", 0, 0)
+        se.height = 1
+
         c_node = CityNode("San Ramon", "CC", 11, 22)
         self.assertEqual(c_node.name, "San Ramon")
         self.assertEqual(c_node.country, "CC")
@@ -16,8 +26,17 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(c_node.distance, None)
         self.assertEqual(c_node.parent, None)
         self.assertEqual(c_node.b_factor_ne_sw, 0)
-        self.assertEqual(c_node.b_factor_se_nw, 0)
-        self.assertEqual(c_node.node_height, 1)
+        self.assertEqual(c_node.b_factor_nw_se, 0)
+        self.assertEqual(c_node.height, 1)
+        c_node.children["ne"] = ne 
+        c_node.children["sw"] = sw
+        c_node.children["nw"] = nw
+        c_node.children["se"] = se
+        c_node.refresh_all_b_factor()
+        c_node.refresh_b_factor_ne_sw()
+        c_node.refresh_b_factor_nw_se()
+        self.assertEqual(c_node.b_factor_ne_sw, 1)
+        self.assertEqual(c_node.b_factor_nw_se, -1)
 
         c_node = CityNode("San Francisco", "CC", 33, 44)
         self.assertEqual(c_node.name, "San Francisco")
@@ -29,8 +48,17 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(c_node.distance, None)
         self.assertEqual(c_node.parent, None)
         self.assertEqual(c_node.b_factor_ne_sw, 0)
-        self.assertEqual(c_node.b_factor_se_nw, 0)
-        self.assertEqual(c_node.node_height, 1)
+        self.assertEqual(c_node.b_factor_nw_se, 0)
+        self.assertEqual(c_node.height, 1)
+        c_node.children["ne"] = ne 
+        c_node.children["sw"] = sw
+        c_node.children["nw"] = nw
+        c_node.children["se"] = se
+        c_node.refresh_all_b_factor()
+        c_node.refresh_b_factor_ne_sw()
+        c_node.refresh_b_factor_nw_se()
+        self.assertEqual(c_node.b_factor_ne_sw, 1)
+        self.assertEqual(c_node.b_factor_nw_se, -1)
 
         c_node = CityNode("Los Angeles", "CC", 55, 66)
         self.assertEqual(c_node.name, "Los Angeles")
@@ -42,8 +70,17 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(c_node.distance, None)
         self.assertEqual(c_node.parent, None)
         self.assertEqual(c_node.b_factor_ne_sw, 0)
-        self.assertEqual(c_node.b_factor_se_nw, 0)
-        self.assertEqual(c_node.node_height, 1)
+        self.assertEqual(c_node.b_factor_nw_se, 0)
+        self.assertEqual(c_node.height, 1)
+        c_node.children["ne"] = ne 
+        c_node.children["sw"] = sw
+        c_node.children["nw"] = nw
+        c_node.children["se"] = se
+        c_node.refresh_all_b_factor()
+        c_node.refresh_b_factor_ne_sw()
+        c_node.refresh_b_factor_nw_se()
+        self.assertEqual(c_node.b_factor_ne_sw, 1)
+        self.assertEqual(c_node.b_factor_nw_se, -1)
 
     def test_city_location_comparason(self):
         c_ne = CityNode("c_ne", "cc", 90, 150)
@@ -73,8 +110,10 @@ class TestBucketeList(unittest.TestCase):
 
         self.assertFalse(c_ne.has_child_ne_sw())
         self.assertFalse(c_nw.has_child_ne_sw())
+        self.assertFalse(c_se.has_child_ne_sw())
         self.assertFalse(c_se.has_child_nw_se())
         self.assertFalse(c_sw.has_child_nw_se())
+        self.assertFalse(c_ne.has_child_nw_se())
 
 
     def test_CountryTable_hash(self):
