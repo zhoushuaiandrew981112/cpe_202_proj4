@@ -42,19 +42,22 @@ class CityNode:
 
 
     def is_nw_of_self(self, new):
-        return new.lat > self.lat and new.lon > self.lon
+        return new.lat > self.lat and new.lon < self.lon
 
 
     def is_se_of_self(self, new):
-        return new.lat < old.lat and new.lon < self.lon
+        return new.lat < self.lat and new.lon > self.lon
 
 
     def is_sw_of_self(self, new):
-        return new.lat < self.lat and new.lon > self.lon
+        return new.lat < self.lat and new.lon < self.lon
         
 
+    def add_city(self, node)
 
-    #def add_city(self, node)
+
+
+
 
 class CountryTable:
     

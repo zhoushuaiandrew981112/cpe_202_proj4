@@ -49,8 +49,19 @@ class TestBucketeList(unittest.TestCase):
         c_sw = CityNode("c_sw", "cc", -90, -150)
 
         self.assertTrue(c_sw.is_ne_of_self(c_ne))
+        self.assertTrue(c_se.is_nw_of_self(c_nw))
+        self.assertTrue(c_nw.is_se_of_self(c_se))
+        self.assertTrue(c_ne.is_sw_of_self(c_sw))
 
+        self.assertFalse(c_sw.is_nw_of_self(c_ne))
+        self.assertFalse(c_se.is_ne_of_self(c_nw))
+        self.assertFalse(c_nw.is_sw_of_self(c_se))
+        self.assertFalse(c_ne.is_se_of_self(c_sw))
 
+        self.assertFalse(c_sw.is_se_of_self(c_ne))
+        self.assertFalse(c_se.is_sw_of_self(c_nw))
+        self.assertFalse(c_nw.is_ne_of_self(c_se))
+        self.assertFalse(c_ne.is_nw_of_self(c_sw))
 
     def test_CountryTable_hash(self):
         size = 128515
