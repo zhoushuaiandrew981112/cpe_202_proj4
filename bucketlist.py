@@ -99,16 +99,48 @@ class CityNode:
         self.refresh_b_factor_nw_se()
 
 
+    #def rotate_right_ne_sw(self):
+        
+    
+
+
+    """
+    def right_left_ne_sw(self, r_child):
+        if r_child.b_factor_ne_sw < -1:
+            r_child.rotate_right_ne_sw()
+
+
+    def left_right_ne_sw(self, l_child):
+        if l_child.b_factor_ne_sw > 1:
+            r_child.rotate_left_ne_sw()
+
+
+    def right_left_nw_se(self, r_child):
+        if r_child.b_factor_nw_se < -1:
+            r_child.rotate_right_nw_se()
+
+
+    def left_right_nw_se(self, l_child):
+        if l_child.b_factor_nw_se > 1:
+            r_child.rotate_left_nw_se()
+
+
     def rebalance(self, node):
-        if node.has_no_child():
-            self.rebalance(node.parent)
-        else:    
-            pass
-
-
+        node.refresh_all_b_factor()
+        if node.b_factor_ne_sw > 1:
+            node.right_left_ne_sw(node.children["sw"])
+            node.rotate_left_ne_sw()
+        elif node.b_factor_ne_sw < -1:
+            node.left_right_ne_sw(node.children["ne"])
+            node.rotate_right_ne_sw() 
+        if node.b_factor_nw_se > 1:
+            node.right_left_nw_se(node.children["se"])
+            node.rotate_left_nw_se()
+        elif node.b_factor_nw_se < -1:
+            node.left_right_nw_se(node.children["nw"])
+            node.rotate_right_nw_se() 
 
  
-    """
     def insert(node, c_node):
         if c_node.is_ne_of_self(node):
              if c_node.children["ne"] != None:
