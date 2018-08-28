@@ -131,11 +131,23 @@ class CityNode:
         self.parent = new_root                         # seet og node's parent pointer to new c node
 
 
-    """
     def rotate_right_ne_sw(self):
-        new_root = self 
+        new_root = self.children["ne"]
+        self.children["ne"] = new_root.children["sw"]
+        if self.children["ne"] != None:
+            self.children["ne"].parent = self
+        new_root.children["sw"] = self
+        new_root.parent = self.parent
+        if self.has_child_ne() and self.has_parent():
+            if self.parent.children["ne"] == self:
+                self.parent.children["ne"] = new_root
+        if self.has_child_sw() and self.has_parent():
+            if self.parent.children["sw"] == self:
+                self.parent.children["sw"] = new_root
+        self.parent = new_root
 
 
+    """
     def right_left_ne_sw(self, r_child):
         if r_child.b_factor_ne_sw < -1:
             r_child.rotate_right_ne_sw()
