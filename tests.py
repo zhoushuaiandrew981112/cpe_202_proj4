@@ -931,6 +931,69 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(c.children["se"], None)
         self.assertEqual(c.children["nw"], None)
 
+    def test_CityNode_insert_helper(self):
+        a = CityNode("a", "cc", 0, 0) 
+        b = CityNode("b", "cc", -10, -10) 
+        c = CityNode("c", "cc", -15, -15) 
+        d = CityNode("d", "cc", 11, 11) 
+        e = CityNode("e", "cc", 20, 20) 
+        f = CityNode("f", "cc", 30, 30) 
+        g = CityNode("g", "cc", 40, 40) 
+   
+        a.insert_sw(b, a)
+        a.insert_sw(c, a)
+        b.insert_ne(d, b)
+        b.insert_ne(e, b)
+
+        self.assertEqual(a.parent, d)
+        self.assertEqual(b.parent, None)
+        self.assertEqual(b.children["ne"], d)
+        self.assertEqual(b.children["sw"], c)
+        self.assertEqual(c.parent, b)
+        self.assertEqual(d.parent, b)
+        self.assertEqual(d.children["ne"], e)
+        self.assertEqual(d.children["sw"], a)
+        d.rebalance_refresh_height(d)
+        self.assertEqual(e.parent, d)
+        e.rebalance_refresh_height(e)
+
+        a.insert_sw(c, f)
+        b.insert_ne(d, g)
+
+        self.assertEqual(f.parent, None)
+        self.assertEqual(g.parent, None)
+
+        a = CityNode("a", "cc", 0, 0) 
+        b = CityNode("b", "cc", -10, 10) 
+        c = CityNode("c", "cc", -15, 15) 
+        d = CityNode("d", "cc", 11, -11) 
+        e = CityNode("e", "cc", 20, -20) 
+        f = CityNode("f", "cc", 30, -30) 
+        g = CityNode("g", "cc", 40, -40) 
+   
+        a.insert_se(b, a)
+        a.insert_se(c, a)
+        b.insert_nw(d, b)
+        b.insert_nw(e, b)
+
+        self.assertEqual(a.parent, d)
+        self.assertEqual(b.parent, None)
+        self.assertEqual(b.children["nw"], d)
+        self.assertEqual(b.children["se"], c)
+        self.assertEqual(c.parent, b)
+        self.assertEqual(d.parent, b)
+        self.assertEqual(d.children["nw"], e)
+        self.assertEqual(d.children["se"], a)
+        self.assertEqual(e.parent, d)
+        self.assertEqual(e.ne_sw_height, 1)
+        self.assertEqual(e.nw_se_height, 1)
+
+        a.insert_nw(c, f)
+        b.insert_se(d, g)
+
+        self.assertEqual(f.parent, None)
+        self.assertEqual(g.parent, None)
+
     def test_CityNode_insert(self):
         a = CityNode("a", "cc", 0, 0) 
         b = CityNode("b", "cc", -10, -10) 
@@ -1160,6 +1223,235 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(e.ne_sw_height, 1)
         self.assertEqual(e.nw_se_height, 1)
 
+    def test_CityNode_add_city(self):
+
+        a = CityNode("a", "cc", 0, 0) 
+        b = CityNode("b", "cc", -10, -10) 
+        c = CityNode("c", "cc", -15, -15) 
+        d = CityNode("d", "cc", 11, 11) 
+        e = CityNode("e", "cc", 20, 20) 
+   
+        self.assertEqual(a.parent, None)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], None)
+
+        a.add_city(b)
+     
+        self.assertEqual(a.parent, None)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], b)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], None)
+
+        self.assertEqual(b.parent, a)
+        self.assertEqual(b.children["ne"], None)
+        self.assertEqual(b.children["sw"], None)
+        self.assertEqual(b.children["nw"], None)
+        self.assertEqual(b.children["se"], None)
+
+        a.add_city(c)
+
+        self.assertEqual(a.parent, b)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], None)
+
+        self.assertEqual(b.parent, None)
+        self.assertEqual(b.children["ne"], a)
+        self.assertEqual(b.children["sw"], c)
+        self.assertEqual(b.children["nw"], None)
+        self.assertEqual(b.children["se"], None)
+         
+        self.assertEqual(c.parent, b)
+        self.assertEqual(c.children["ne"], None)
+        self.assertEqual(c.children["sw"], None)
+        self.assertEqual(c.children["nw"], None)
+        self.assertEqual(c.children["se"], None)
+
+        b.add_city(d)
+
+        self.assertEqual(a.parent, b)
+        self.assertEqual(a.children["ne"], d)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], None)
+
+        self.assertEqual(b.parent, None)
+        self.assertEqual(b.children["ne"], a)
+        self.assertEqual(b.children["sw"], c)
+        self.assertEqual(b.children["nw"], None)
+        self.assertEqual(b.children["se"], None)
+         
+        self.assertEqual(c.parent, b)
+        self.assertEqual(c.children["ne"], None)
+        self.assertEqual(c.children["sw"], None)
+        self.assertEqual(c.children["nw"], None)
+        self.assertEqual(c.children["se"], None)
+
+        self.assertEqual(d.parent, a)
+        self.assertEqual(d.children["ne"], None)
+        self.assertEqual(d.children["sw"], None)
+        self.assertEqual(d.children["nw"], None)
+        self.assertEqual(d.children["se"], None)
+
+        b.add_city(e)
+
+        self.assertEqual(a.parent, d)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], None)
+        self.assertEqual(a.ne_sw_height, 1)
+        self.assertEqual(a.nw_se_height, 1)
+
+        self.assertEqual(b.parent, None)
+        self.assertEqual(b.children["ne"], d)
+        self.assertEqual(b.children["sw"], c)
+        self.assertEqual(b.children["nw"], None)
+        self.assertEqual(b.children["se"], None)
+        a.rebalance_refresh_height(a)
+        self.assertEqual(b.ne_sw_height, 3)
+        self.assertEqual(b.nw_se_height, 1)
+         
+        self.assertEqual(c.parent, b)
+        self.assertEqual(c.children["ne"], None)
+        self.assertEqual(c.children["sw"], None)
+        self.assertEqual(c.children["nw"], None)
+        self.assertEqual(c.children["se"], None)
+
+        self.assertEqual(d.parent, b)
+        self.assertEqual(d.children["ne"], e)
+        self.assertEqual(d.children["sw"], a)
+        self.assertEqual(d.children["nw"], None)
+        self.assertEqual(d.children["se"], None)
+        d.rebalance_refresh_height(d)
+        self.assertEqual(d.ne_sw_height, 2)
+        self.assertEqual(d.nw_se_height, 1)
+
+        self.assertEqual(e.parent, d)
+        self.assertEqual(e.children["ne"], None)
+        self.assertEqual(e.children["sw"], None)
+        self.assertEqual(e.children["nw"], None)
+        self.assertEqual(e.children["se"], None)
+        e.rebalance_refresh_height(e)
+        self.assertEqual(e.ne_sw_height, 1)
+        self.assertEqual(e.nw_se_height, 1)
+
+
+        a = CityNode("a", "cc", 0, 0) 
+        b = CityNode("b", "cc", -10, 10) 
+        c = CityNode("c", "cc", -15, 15) 
+        d = CityNode("d", "cc", 11, -11) 
+        e = CityNode("e", "cc", 20, -20) 
+   
+        self.assertEqual(a.parent, None)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], None)
+
+        a.add_city(b)
+     
+        self.assertEqual(a.parent, None)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], b)
+
+        self.assertEqual(b.parent, a)
+        self.assertEqual(b.children["ne"], None)
+        self.assertEqual(b.children["sw"], None)
+        self.assertEqual(b.children["nw"], None)
+        self.assertEqual(b.children["se"], None)
+
+        a.add_city(c)
+
+        self.assertEqual(a.parent, b)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], None)
+
+        self.assertEqual(b.parent, None)
+        self.assertEqual(b.children["ne"], None)
+        self.assertEqual(b.children["sw"], None)
+        self.assertEqual(b.children["nw"], a)
+        self.assertEqual(b.children["se"], c)
+         
+        self.assertEqual(c.parent, b)
+        self.assertEqual(c.children["ne"], None)
+        self.assertEqual(c.children["sw"], None)
+        self.assertEqual(c.children["nw"], None)
+        self.assertEqual(c.children["se"], None)
+
+        b.add_city(d)
+
+        self.assertEqual(a.parent, b)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], d)
+        self.assertEqual(a.children["se"], None)
+
+        self.assertEqual(b.parent, None)
+        self.assertEqual(b.children["ne"], None)
+        self.assertEqual(b.children["sw"], None)
+        self.assertEqual(b.children["nw"], a)
+        self.assertEqual(b.children["se"], c)
+         
+        self.assertEqual(c.parent, b)
+        self.assertEqual(c.children["ne"], None)
+        self.assertEqual(c.children["sw"], None)
+        self.assertEqual(c.children["nw"], None)
+        self.assertEqual(c.children["se"], None)
+
+        self.assertEqual(d.parent, a)
+        self.assertEqual(d.children["ne"], None)
+        self.assertEqual(d.children["sw"], None)
+        self.assertEqual(d.children["nw"], None)
+        self.assertEqual(d.children["se"], None)
+
+        b.add_city(e)
+
+        self.assertEqual(a.parent, d)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(a.children["se"], None)
+        self.assertEqual(a.ne_sw_height, 1)
+        self.assertEqual(a.nw_se_height, 1)
+
+        self.assertEqual(b.parent, None)
+        self.assertEqual(b.children["ne"], None)
+        self.assertEqual(b.children["sw"], None)
+        self.assertEqual(b.children["nw"], d)
+        self.assertEqual(b.children["se"], c)
+        self.assertEqual(b.ne_sw_height, 1)
+        self.assertEqual(b.nw_se_height, 3)
+         
+        self.assertEqual(c.parent, b)
+        self.assertEqual(c.children["ne"], None)
+        self.assertEqual(c.children["sw"], None)
+        self.assertEqual(c.children["nw"], None)
+        self.assertEqual(c.children["se"], None)
+
+        self.assertEqual(d.parent, b)
+        self.assertEqual(d.children["ne"], None)
+        self.assertEqual(d.children["sw"], None)
+        self.assertEqual(d.children["nw"], e)
+        self.assertEqual(d.children["se"], a)
+        self.assertEqual(d.ne_sw_height, 1)
+        self.assertEqual(d.nw_se_height, 2)
+
+        self.assertEqual(e.parent, d)
+        self.assertEqual(e.children["ne"], None)
+        self.assertEqual(e.children["sw"], None)
+        self.assertEqual(e.children["nw"], None)
+        self.assertEqual(e.children["se"], None)
+        self.assertEqual(e.ne_sw_height, 1)
+        self.assertEqual(e.nw_se_height, 1)
 
 
 
