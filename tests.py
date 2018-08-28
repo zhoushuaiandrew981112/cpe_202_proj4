@@ -398,6 +398,127 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(e.children["sw"], None)
         self.assertEqual(e.children["ne"], None)
 
+    def test_city_node_rotate_left_nw_se(self):
+        
+        """ only ne and sw node """
+        b = CityNode("b", "cc", 0, 0)
+        a = CityNode("a", "cc", -10, -10, b)
+        c = CityNode("c", "cc", -20, -20, a)
+        d = CityNode("d", "cc", 10, 10, b)
+        e = CityNode("e", "cc", -5, -5, a)
+
+        b.children["nw"] = d
+        b.children["se"] = a
+        a.children["nw"] = e
+        a.children["se"] = c
+
+        b.rotate_left_nw_se()
+
+        self.assertEqual(a.parent, None)
+        self.assertEqual(a.children["se"], c)
+        self.assertTrue(a.is_sw_of_self(c))
+        self.assertEqual(a.children["nw"], b)
+        self.assertTrue(a.is_ne_of_self(b))
+        
+        self.assertEqual(c.parent, a)
+        self.assertEqual(c.parent.name, "a")
+        self.assertEqual(c.children["se"], None)
+        self.assertEqual(c.children["nw"], None)
+        
+        self.assertEqual(b.parent, a)
+        self.assertEqual(b.children["se"], e)
+        self.assertTrue(b.is_sw_of_self(e))
+        self.assertEqual(b.children["nw"], d)
+        self.assertTrue(b.is_ne_of_self(d))
+
+        self.assertEqual(d.parent, b)
+        self.assertEqual(d.children["se"], None)
+        self.assertEqual(d.children["nw"], None)
+
+        self.assertEqual(e.parent, b)
+        self.assertEqual(e.children["se"], None)
+        self.assertEqual(e.children["nw"], None)
+
+        """ self is ne child of parent """
+        f = CityNode("f", "cc", -30, -30)
+        b = CityNode("b", "cc", 0, 0, f)
+        a = CityNode("a", "cc", -10, -10, b)
+        c = CityNode("c", "cc", -20, -20, a)
+        d = CityNode("d", "cc", 10, 10, b)
+        e = CityNode("e", "cc", -5, -5, a)
+
+        f.children["nw"] = b
+        b.children["nw"] = d
+        b.children["se"] = a
+        a.children["nw"] = e
+        a.children["se"] = c
+
+        b.rotate_left_nw_se()
+
+        self.assertEqual(f.parent, None)
+        self.assertEqual(f.children["se"], None)
+        self.assertEqual(f.children["nw"], a)
+
+        self.assertEqual(a.parent, f)
+        self.assertEqual(a.children["se"], c)
+        self.assertEqual(a.children["nw"], b)
+        
+        self.assertEqual(c.parent, a)
+        self.assertEqual(c.children["se"], None)
+        self.assertEqual(c.children["nw"], None)
+        
+        self.assertEqual(b.parent, a)
+        self.assertEqual(b.children["se"], e)
+        self.assertEqual(b.children["nw"], d)
+
+        self.assertEqual(d.parent, b)
+        self.assertEqual(d.children["se"], None)
+        self.assertEqual(d.children["nw"], None)
+
+        self.assertEqual(e.parent, b)
+        self.assertEqual(e.children["se"], None)
+        self.assertEqual(e.children["nw"], None)
+
+        """ self is sw child of parent """
+        g = CityNode("g", "cc", 30, 30)
+        b = CityNode("b", "cc", 0, 0, g)
+        a = CityNode("a", "cc", -10, -10, b)
+        c = CityNode("c", "cc", -20, -20, a)
+        d = CityNode("d", "cc", 10, 10, b)
+        e = CityNode("e", "cc", -5, -5, a)
+
+        g.children["se"] = b
+        b.children["nw"] = d
+        b.children["se"] = a
+        a.children["nw"] = e
+        a.children["se"] = c
+
+        b.rotate_left_nw_se()
+
+        self.assertEqual(g.parent, None)
+        self.assertEqual(g.children["se"], a)
+        self.assertEqual(g.children["nw"], None)
+
+        self.assertEqual(a.parent, g)
+        self.assertEqual(a.children["se"], c)
+        self.assertEqual(a.children["nw"], b)
+        
+        self.assertEqual(c.parent, a)
+        self.assertEqual(c.parent.name, "a")
+        self.assertEqual(c.children["se"], None)
+        self.assertEqual(c.children["nw"], None)
+        
+        self.assertEqual(b.parent, a)
+        self.assertEqual(b.children["se"], e)
+        self.assertEqual(b.children["nw"], d)
+
+        self.assertEqual(d.parent, b)
+        self.assertEqual(d.children["se"], None)
+        self.assertEqual(d.children["nw"], None)
+
+        self.assertEqual(e.parent, b)
+        self.assertEqual(e.children["se"], None)
+        self.assertEqual(e.children["nw"], None)
 
 
     def test_CountryTable_hash(self):
