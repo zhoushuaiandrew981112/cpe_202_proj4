@@ -7,15 +7,15 @@
 
 class CityNode:
 
-    def __init__(self, city_name, country_code, latitude, longitude):
+    def __init__(self, city_name, country_code, lat, lon, parent = None):
         self.name = city_name
         self.country = country_code
-        self.lat = latitude
-        self.lon = longitude
+        self.lat = lat
+        self.lon = lon
         self.children = {"ne" : None, "nw" : None, "se" : None, "sw" : None}
         self.airport = None
         self.distance = None
-        self.parent = None
+        self.parent = parent
         self.b_factor_ne_sw = 0
         self.b_factor_nw_se = 0
         self.height = 1
@@ -67,17 +67,32 @@ class CityNode:
         sw = self.children["sw"] == None
         return ne and nw and se and sw
 
+    def has_child_ne(self):
+        return self.children["ne"] != None
+
+
+    def has_child_sw(self):
+        return self.children["sw"] != None
+
+
+    def has_child_nw(self):
+        return self.children["nw"] != None
+
+
+    def has_child_se(self):
+        return self.children["se"] != None
+
 
     def has_child_ne_sw(self):
-        ne = self.children["ne"] != None
-        sw = self.children["sw"] != None
-        return ne and sw
+        return self.has_child_ne() and self.has_child_sw()
 
 
     def has_child_nw_se(self):
-        nw = self.children["nw"] != None
-        se = self.children["se"] != None
-        return nw and se
+        return self.has_child_nw() and self.has_child_se()
+
+
+    def has_parent(self):
+        return self.parent != None
 
 
     def refresh_b_factor_ne_sw(self):
@@ -99,12 +114,28 @@ class CityNode:
         self.refresh_b_factor_nw_se()
 
 
-    #def rotate_right_ne_sw(self):
-        
-    
+    def rotate_left_ne_sw(self):
+        new_root = self.children["sw"]                 # new c node
+        self.children["sw"] = new_root.children["ne"]  # set og node's right child to new c node's left child
+        if self.children["sw"] != None:                # if og node right child is not None
+            self.children["sw"].parent = self              # set og node's right child'parent pointer to og node
+        new_root.children["ne"] = self                 # sef c node left child to og node
+        new_root.parent = self.parent                  # set c node's parent pointer to og node's parent
+        if self.has_child_ne() and self.has_parent():
+            if self.parent.children["ne"] == self:         # if og node is a left child
+                self.parent.children["ne"] = new_root          # set og node parent l child to c node
+        #elif self.has_child_sw() and self.has_parent():
+        if self.has_child_sw() and self.has_parent():
+            if self.parent.children["sw"] == self:       # if og node is a right child
+                self.parent.children["sw"] = new_root          # set og node parent r child to c node
+        self.parent = new_root                         # seet og node's parent pointer to new c node
 
 
     """
+    def rotate_right_ne_sw(self):
+        new_root = self 
+
+
     def right_left_ne_sw(self, r_child):
         if r_child.b_factor_ne_sw < -1:
             r_child.rotate_right_ne_sw()
