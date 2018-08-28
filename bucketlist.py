@@ -121,11 +121,10 @@ class CityNode:
             self.children["sw"].parent = self              # set og node's right child'parent pointer to og node
         new_root.children["ne"] = self                 # sef c node left child to og node
         new_root.parent = self.parent                  # set c node's parent pointer to og node's parent
-        if self.has_child_ne() and self.has_parent():
+        if self.has_parent():
             if self.parent.children["ne"] == self:         # if og node is a left child
                 self.parent.children["ne"] = new_root          # set og node parent l child to c node
-        #elif self.has_child_sw() and self.has_parent():
-        if self.has_child_sw() and self.has_parent():
+        if self.has_parent():
             if self.parent.children["sw"] == self:       # if og node is a right child
                 self.parent.children["sw"] = new_root          # set og node parent r child to c node
         self.parent = new_root                         # seet og node's parent pointer to new c node
@@ -138,10 +137,10 @@ class CityNode:
             self.children["se"].parent = self
         new_root.children["nw"] = self
         new_root.parent = self.parent
-        if self.has_child_nw() and self.has_parent():
+        if self.has_parent():
             if self.parent.children["nw"] == self:
                 self.parent.children["nw"] = new_root
-        if self.has_child_se() and self.has_parent():
+        if self.has_parent():
             if self.parent.children["se"] == self:
                 self.parent.children["se"] = new_root
         self.parent = new_root
@@ -154,10 +153,10 @@ class CityNode:
             self.children["ne"].parent = self
         new_root.children["sw"] = self
         new_root.parent = self.parent
-        if self.has_child_ne() and self.has_parent():
+        if self.has_parent():
             if self.parent.children["ne"] == self:
                 self.parent.children["ne"] = new_root
-        if self.has_child_sw() and self.has_parent():
+        if self.has_parent():
             if self.parent.children["sw"] == self:
                 self.parent.children["sw"] = new_root
         self.parent = new_root
@@ -170,16 +169,15 @@ class CityNode:
             self.children["nw"].parent = self
         new_root.children["se"] = self
         new_root.parent = self.parent
-        if self.has_child_nw() and self.has_parent():
+        if self.has_parent():
             if self.parent.children["nw"] == self:
                 self.parent.children["nw"] = new_root
-        if self.has_child_se() and self.has_parent():
+        if self.has_parent():
             if self.parent.children["se"] == self:
                 self.parent.children["se"] = new_root
         self.parent = new_root
 
 
-    """
     def right_left_ne_sw(self, r_child):
         if r_child.b_factor_ne_sw < -1:
             r_child.rotate_right_ne_sw()
@@ -187,7 +185,7 @@ class CityNode:
 
     def left_right_ne_sw(self, l_child):
         if l_child.b_factor_ne_sw > 1:
-            r_child.rotate_left_ne_sw()
+            l_child.rotate_left_ne_sw()
 
 
     def right_left_nw_se(self, r_child):
@@ -197,7 +195,8 @@ class CityNode:
 
     def left_right_nw_se(self, l_child):
         if l_child.b_factor_nw_se > 1:
-            r_child.rotate_left_nw_se()
+            l_child.rotate_left_nw_se()
+    """
 
 
     def rebalance(self, node):
@@ -213,7 +212,9 @@ class CityNode:
             node.rotate_left_nw_se()
         elif node.b_factor_nw_se < -1:
             node.left_right_nw_se(node.children["nw"])
-            node.rotate_right_nw_se() 
+            node.rotate_right_nw_se()
+        if node.has_parent():
+            self.rebalance(node.parent) 
 
  
     def insert(node, c_node):
@@ -241,7 +242,6 @@ class CityNode:
              else:
                  c_node.children["sw"] = node
                  node.parent = c_node
-
 
 
     def add_city(self, node):

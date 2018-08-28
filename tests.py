@@ -640,6 +640,68 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(e.children["se"], None)
         self.assertEqual(e.children["nw"], None)
 
+
+    def test_CityNode_right_left_ne_sw(self):
+        a = CityNode("a", "cc", 0, 0)
+        c = CityNode("c", "cc", 0, 0, a)
+        c.b_factor_ne_sw = -2
+        b = CityNode("b", "cc", 0, 0, c)
+
+        a.children["sw"] = c
+        c.children["ne"] = b
+       
+        a.right_left_ne_sw(c)  
+
+        self.assertEqual(a.children["sw"], b)
+        self.assertEqual(b.children["sw"], c)
+
+
+    def test_CityNode_left_right_ne_sw(self):
+        a = CityNode("a", "cc", 0, 0)
+        c = CityNode("c", "cc", 0, 0, a)
+        c.b_factor_ne_sw = 2
+        b = CityNode("b", "cc", 0, 0, c)
+
+        a.children["ne"] = c
+        c.children["sw"] = b
+       
+        a.left_right_ne_sw(c)  
+
+        self.assertEqual(a.children["ne"], b)
+        self.assertEqual(b.children["ne"], c)
+
+
+    def test_CityNode_right_left_nw_se(self):
+        a = CityNode("a", "cc", 0, 0)
+        c = CityNode("c", "cc", 0, 0, a)
+        c.b_factor_nw_se = -2
+        b = CityNode("b", "cc", 0, 0, c)
+
+        a.children["se"] = c
+        c.children["nw"] = b
+       
+        a.right_left_nw_se(c)  
+
+        self.assertEqual(a.children["se"], b)
+        self.assertEqual(b.children["se"], c)
+
+
+    def test_CityNode_left_right_nw_se(self):
+        a = CityNode("a", "cc", 0, 0)
+        c = CityNode("c", "cc", 0, 0, a)
+        c.b_factor_nw_se = 2
+        b = CityNode("b", "cc", 0, 0, c)
+
+        a.children["nw"] = c
+        c.children["se"] = b
+       
+        a.left_right_nw_se(c)  
+
+        self.assertEqual(a.children["nw"], b)
+        self.assertEqual(b.children["nw"], c)
+        
+
+
     def test_CountryTable_hash(self):
         size = 128515
         table = CountryTable(size)
