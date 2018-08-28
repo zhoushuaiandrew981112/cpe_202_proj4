@@ -163,6 +163,22 @@ class CityNode:
         self.parent = new_root
 
 
+    def rotate_right_nw_se(self):
+        new_root = self.children["nw"]
+        self.children["nw"] = new_root.children["se"]
+        if self.children["nw"] != None:
+            self.children["nw"].parent = self
+        new_root.children["se"] = self
+        new_root.parent = self.parent
+        if self.has_child_nw() and self.has_parent():
+            if self.parent.children["nw"] == self:
+                self.parent.children["nw"] = new_root
+        if self.has_child_se() and self.has_parent():
+            if self.parent.children["se"] == self:
+                self.parent.children["se"] = new_root
+        self.parent = new_root
+
+
     """
     def right_left_ne_sw(self, r_child):
         if r_child.b_factor_ne_sw < -1:
