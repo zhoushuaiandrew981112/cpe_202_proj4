@@ -640,7 +640,6 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(e.children["se"], None)
         self.assertEqual(e.children["nw"], None)
 
-
     def test_CityNode_right_left_ne_sw(self):
         a = CityNode("a", "cc", 0, 0)
         c = CityNode("c", "cc", 0, 0, a)
@@ -655,6 +654,29 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(a.children["sw"], b)
         self.assertEqual(b.children["sw"], c)
 
+        b.rotate_left_ne_sw()
+
+        d = CityNode("b", "cc", 0, 0, a)
+        a.children["ne"] = d
+
+        a.right_left_ne_sw(c)  
+
+        self.assertEqual(a.children["sw"], b)
+        self.assertEqual(b.children["sw"], c)
+        self.assertEqual(a.children["ne"], d)
+
+        b.rotate_left_ne_sw()
+
+        e = CityNode("e", "cc", 0, 0, d)
+        d.children["ne"] = e
+
+        a.right_left_ne_sw(c)  
+
+        self.assertEqual(a.children["sw"], b)
+        self.assertEqual(b.children["sw"], c)
+        self.assertEqual(a.children["ne"], d)
+        self.assertEqual(d.children["ne"], e)
+ 
 
     def test_CityNode_left_right_ne_sw(self):
         a = CityNode("a", "cc", 0, 0)
@@ -670,6 +692,28 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(a.children["ne"], b)
         self.assertEqual(b.children["ne"], c)
 
+        b.rotate_right_ne_sw()
+
+        d = CityNode("d", "cc", 0, 0, a)
+        a.children["sw"] = d
+
+        a.left_right_ne_sw(c)
+
+        self.assertEqual(a.children["ne"], b)
+        self.assertEqual(b.children["ne"], c)
+        self.assertEqual(a.children["sw"], d)
+
+        b.rotate_right_ne_sw()
+
+        e = CityNode("e", "cc", 0, 0, d)
+        d. children["sw"] = e
+
+        a.left_right_ne_sw(c)
+
+        self.assertEqual(a.children["ne"], b)
+        self.assertEqual(b.children["ne"], c)
+        self.assertEqual(a.children["sw"], d)
+        self.assertEqual(d.children["sw"], e)
 
     def test_CityNode_right_left_nw_se(self):
         a = CityNode("a", "cc", 0, 0)
@@ -685,6 +729,28 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(a.children["se"], b)
         self.assertEqual(b.children["se"], c)
 
+        b.rotate_left_nw_se()
+
+        d = CityNode("b", "cc", 0, 0, a)
+        a.children["nw"] = d
+
+        a.right_left_nw_se(c)  
+
+        self.assertEqual(a.children["se"], b)
+        self.assertEqual(b.children["se"], c)
+        self.assertEqual(a.children["nw"], d)
+
+        b.rotate_left_nw_se()
+
+        e = CityNode("e", "cc", 0, 0, a)
+        d.children["nw"] = e
+
+        a.right_left_nw_se(c)  
+
+        self.assertEqual(a.children["se"], b)
+        self.assertEqual(b.children["se"], c)
+        self.assertEqual(a.children["nw"], d)
+        self.assertEqual(d.children["nw"], e)
 
     def test_CityNode_left_right_nw_se(self):
         a = CityNode("a", "cc", 0, 0)
@@ -700,6 +766,28 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(a.children["nw"], b)
         self.assertEqual(b.children["nw"], c)
         
+        b.rotate_right_nw_se()
+
+        d = CityNode("d", "cc", 0, 0, a)
+        a.children["se"] = d
+
+        a.left_right_nw_se(c)
+
+        self.assertEqual(a.children["nw"], b)
+        self.assertEqual(b.children["nw"], c)
+        self.assertEqual(a.children["se"], d)
+
+        b.rotate_right_nw_se()
+
+        e = CityNode("e", "cc", 0, 0, d)
+        d. children["se"] = e
+
+        a.left_right_nw_se(c)
+
+        self.assertEqual(a.children["nw"], b)
+        self.assertEqual(b.children["nw"], c)
+        self.assertEqual(a.children["se"], d)
+        self.assertEqual(d.children["se"], e)
 
 
     def test_CountryTable_hash(self):
