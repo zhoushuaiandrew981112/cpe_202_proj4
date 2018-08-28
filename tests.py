@@ -82,6 +82,28 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(c_node.b_factor_ne_sw, 1)
         self.assertEqual(c_node.b_factor_nw_se, -1)
 
+        sw = CityNode("sw", "cc", 0, 0)
+        sw.height = 1
+        ne = CityNode("ne", "cc", 0, 0)
+        ne.height = 2
+        se = CityNode("se", "cc", 0, 0)
+        se.height = 3
+        nw = CityNode("nw", "cc", 0, 0)
+        nw.height = 4
+        c_node.children = {"ne" : ne, "nw" : nw, "se" : None, "sw" : None}
+        c_node.refresh_all_b_factor()
+        c_node.refresh_b_factor_ne_sw()
+        c_node.refresh_b_factor_nw_se()
+        self.assertEqual(c_node.b_factor_ne_sw, -2)
+        self.assertEqual(c_node.b_factor_nw_se, -4)
+        c_node.children = {"ne" : None, "nw" : None, "se" : se, "sw" : sw}
+        c_node.refresh_all_b_factor()
+        c_node.refresh_b_factor_ne_sw()
+        c_node.refresh_b_factor_nw_se()
+        self.assertEqual(c_node.b_factor_ne_sw, 1)
+        self.assertEqual(c_node.b_factor_nw_se, 3)
+
+
     def test_city_location_comparason(self):
         c_ne = CityNode("c_ne", "cc", 90, 150)
         c_nw = CityNode("c_nw", "cc", 90, -150)
@@ -788,6 +810,100 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(b.children["nw"], c)
         self.assertEqual(a.children["se"], d)
         self.assertEqual(d.children["se"], e)
+
+    def test_CityNode_rebalance(self):
+        a = CityNode("a", "cc", 0, 0)
+        a. height = 3
+        c = CityNode("c", "cc", 0, 0, a)
+        c. height = 2
+        b = CityNode("b", "cc", 0, 0, c)
+        b. height = 1
+
+        a.children["sw"] = c
+        c.children["ne"] = b
+
+        a.refresh_all_b_factor()
+        b.refresh_all_b_factor()
+        c.refresh_all_b_factor()
+
+        c.rebalance(b)
+
+        self.assertEqual(b.children["sw"], c)
+        self.assertEqual(b.children["ne"], a)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(c.children["sw"], None)
+        self.assertEqual(c.children["ne"], None)
+
+        a = CityNode("a", "cc", 0, 0)
+        a. height = 3
+        c = CityNode("c", "cc", 0, 0, a)
+        c. height = 2
+        b = CityNode("b", "cc", 0, 0, c)
+        b. height = 1
+
+        a.children["ne"] = c
+        c.children["sw"] = b
+
+        a.refresh_all_b_factor()
+        b.refresh_all_b_factor()
+        c.refresh_all_b_factor()
+
+        c.rebalance(b)
+
+        self.assertEqual(b.children["sw"], a)
+        self.assertEqual(b.children["ne"], c)
+        self.assertEqual(a.children["sw"], None)
+        self.assertEqual(a.children["ne"], None)
+        self.assertEqual(c.children["sw"], None)
+        self.assertEqual(c.children["ne"], None)
+
+        a = CityNode("a", "cc", 0, 0)
+        a. height = 3
+        c = CityNode("c", "cc", 0, 0, a)
+        c. height = 2
+        b = CityNode("b", "cc", 0, 0, c)
+        b. height = 1
+
+        a.children["se"] = c
+        c.children["nw"] = b
+
+        a.refresh_all_b_factor()
+        b.refresh_all_b_factor()
+        c.refresh_all_b_factor()
+
+        c.rebalance(b)
+
+        self.assertEqual(b.children["se"], c)
+        self.assertEqual(b.children["nw"], a)
+        self.assertEqual(a.children["se"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(c.children["se"], None)
+        self.assertEqual(c.children["nw"], None)
+
+        a = CityNode("a", "cc", 0, 0)
+        a. height = 3
+        c = CityNode("c", "cc", 0, 0, a)
+        c. height = 2
+        b = CityNode("b", "cc", 0, 0, c)
+        b. height = 1
+
+        a.children["nw"] = c
+        c.children["se"] = b
+
+        a.refresh_all_b_factor()
+        b.refresh_all_b_factor()
+        c.refresh_all_b_factor()
+
+        c.rebalance(b)
+
+        self.assertEqual(b.children["se"], a)
+        self.assertEqual(b.children["nw"], c)
+        self.assertEqual(a.children["se"], None)
+        self.assertEqual(a.children["nw"], None)
+        self.assertEqual(c.children["se"], None)
+        self.assertEqual(c.children["nw"], None)
+
 
 
     def test_CountryTable_hash(self):

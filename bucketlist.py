@@ -100,13 +100,21 @@ class CityNode:
         ne = self.children["ne"]
         if sw != None and ne != None:
             self.b_factor_ne_sw = sw.height - ne.height
-
+        elif sw == None and ne != None:
+            self.b_factor_ne_sw = 0 - ne.height 
+        elif sw != None and ne == None:
+            self.b_factor_ne_sw = sw.height 
+ 
 
     def refresh_b_factor_nw_se(self):
         se = self.children["se"]
         nw = self.children["nw"]
         if se != None and nw != None:
             self.b_factor_nw_se = se.height - nw.height
+        elif se == None and nw != None:
+            self.b_factor_nw_se = 0 - nw.height 
+        elif se != None and nw == None:
+            self.b_factor_nw_se = se.height 
 
 
     def refresh_all_b_factor(self):
@@ -196,7 +204,6 @@ class CityNode:
     def left_right_nw_se(self, l_child):
         if l_child.b_factor_nw_se > 1:
             l_child.rotate_left_nw_se()
-    """
 
 
     def rebalance(self, node):
@@ -218,6 +225,8 @@ class CityNode:
 
  
     def insert(node, c_node):
+        c_node.height += 1
+        c_node.refresh_all_b_factor()
         if c_node.is_ne_of_self(node):
              if c_node.children["ne"] != None:
                  self.insert(node, c_node.children["ne"])
@@ -244,6 +253,7 @@ class CityNode:
                  node.parent = c_node
 
 
+    """
     def add_city(self, node):
         self.insert(node, self)
     """            
