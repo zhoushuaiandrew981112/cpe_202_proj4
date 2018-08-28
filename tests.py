@@ -1453,24 +1453,34 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(e.ne_sw_height, 1)
         self.assertEqual(e.nw_se_height, 1)
 
-
-
-
-
-
-
-
+        self.assertEqual(b.find_top_node(b), b)
+        self.assertEqual(b.find_top_node(d), b)
+        self.assertEqual(b.find_top_node(e), b)
 
     def test_CountryTable_hash(self):
+        size = 12851
+        table = CountryTable(size)
+        for x in range(97, 123):
+            for y in range(97, 123):
+                code = chr(x) + chr(y)
+                i = int(str(x % table.size) + str(y % table.size))
+                if i > table.size:
+                    i = i % table.size
+                self.assertEqual(table.hash(code), i)
+
+    def test_CountryTable_rehash(self):
         size = 128515
         table = CountryTable(size)
         for x in range(97, 123):
             for y in range(97, 123):
                 code = chr(x) + chr(y)
-                self.assertEqual(table.hash(code), int(str(x) + str(y)))
+                h_i = table.hash(code)
+                new_h_i = table.rehash(h_i)
+                exp_h_i = (h_i + 1) % table.size 
+                self.assertEqual(new_h_i, exp_h_i)
         
-
-    def test_CountryTable(self):
+        
+    def test_CountryTable_init(self):
         
         "test __init__ and get_bucket_list"
         table = CountryTable(1)
@@ -1493,6 +1503,52 @@ class TestBucketeList(unittest.TestCase):
         self.assertEqual(table.num_items, 0)
         self.assertEqual(table.size, 100)
         self.assertEqual(table.get_load_factor(), 0)
+
+    def test_CountryTable_resize(self):
+        t = CountryTable(5)
+        t.resize()
+        self.assertEqual(t.size, 11)
+
+        t = CountryTable(100)
+        t.resize()
+        self.assertEqual(t.size, 201)
+
+        t = CountryTable(128515)
+        node = CityNode("0", "US", 1, 1)
+        t.bucket_list[0] = node
+        t.resize()
+        self.assertEqual(t.size, 257031)
+
+
+    def test_CountryTable_put_node(self):
+                
+        table = CountryTable(128515)
+
+        node = CityNode("cn", "cc", 0, 0)
+        table.put_node_branch(0, node)
+        table.put_node_branch(1, node)
+        table.put_node_branch(2, node)
+
+
+
+        table = CountryTable(128515)
+
+        i = table.hash("cc")
+        table.put_node("a", "cc", 1, 2)
+        self.assertEqual(table.bucket_list[i].name, "a")
+        table.put_node("b", "cc", 3, 4)
+        self.assertEqual(table.bucket_list[i].name, "a")
+        self.assertEqual(table.bucket_list[i].children["ne"].name, "b")
+        table.num_items = 128514
+        table.put_node("c", "cc", 5, 6)
+        self.assertEqual(table.size, 257031)
+
+
+
+
+
+
+
 
 
 

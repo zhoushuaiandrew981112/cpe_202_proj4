@@ -247,16 +247,20 @@ class CityNode:
     def rebalance(self, node):
         node.refresh_all_b_factor()
         if node.b_factor_ne_sw > 1:
-            node.right_left_ne_sw(node.children["sw"])
+            if node.children["sw"] != None:
+                node.right_left_ne_sw(node.children["sw"])
             node.rotate_left_ne_sw()
         elif node.b_factor_ne_sw < -1:
-            node.left_right_ne_sw(node.children["ne"])
+            if node.children["ne"] != None:
+                node.left_right_ne_sw(node.children["ne"])
             node.rotate_right_ne_sw() 
         if node.b_factor_nw_se > 1:
-            node.right_left_nw_se(node.children["se"])
+            if node.children["se"] != None:
+                node.right_left_nw_se(node.children["se"])
             node.rotate_left_nw_se()
         elif node.b_factor_nw_se < -1:
-            node.left_right_nw_se(node.children["nw"])
+            if node.children["nw"] != None:
+                node.left_right_nw_se(node.children["nw"])
             node.rotate_right_nw_se()
         if node.has_parent():
             self.rebalance_refresh_height(node)
@@ -312,6 +316,11 @@ class CityNode:
         self.insert(node, self)
 
 
+    def find_top_node(self, node):
+        if node.has_parent():
+            return self.find_top_node(node.parent)
+        else:
+            return node
 
 
 class CountryTable:
@@ -331,10 +340,61 @@ class CountryTable:
 
 
     def hash(self, country_code):
-        return int(str(ord(country_code[0])) + str(ord(country_code[1])))
+        i = int(str(ord(country_code[0]) % self.size) + \
+            str(ord(country_code[1]) % self.size))
+        if i > self.size:
+            i = i % self.size
+        return i
 
 
-    #def resize(self)
-         
+    def resize(self):
+        new_table = CountryTable(2 * self.size + 1)
+        for c in self.bucket_list:
+            if c != None:
+                new_table.put_node(c.name, c.country, c.lat, c.lon)
+        self.bucket_list = new_table.bucket_list
+        self.num_items = new_table.num_items
+        self.size = 2 * self.size + 1
 
-    #def put_node(self, city_name, countru_code, lat, lon): 
+        
+    def rehash(self, old_h_i):
+        return (old_h_i + 1) % self.size
+
+
+    def put_node_branch(self, h_i, new_node):
+        if self.bucket_list[h_i] == None:
+            self.bucket_list[h_i] = new_node
+        elif self.bucket_list[h_i].country == new_node.country:
+            self.bucket_list[h_i].add_city(new_node)
+            self.bucket_list[h_i] = new_node.find_top_node(new_node)
+        """
+        else:
+            next_h_i = self.rehash(h_i)
+            start_h_i
+            while self.bucket_list[next_h_i] != None and self.\
+                bucket_list[next_h_i].country_code != new_node.country_code:
+                next_h_i = self.rehash(next_h_i)
+                if next_h_i == start_h_i:
+                    break
+        """
+
+ 
+    def put_node(self, city_name, country_code, lat, lon): 
+        h_i = self.hash(country_code)
+        new_node = CityNode(city_name, country_code, lat, lon)
+        self.put_node_branch(h_i, new_node)
+        self.num_items += 1
+        load_factor_limit = 0.75
+        if self.get_load_factor() > load_factor_limit:
+            self.resize()
+
+
+
+
+
+
+
+
+
+
+
