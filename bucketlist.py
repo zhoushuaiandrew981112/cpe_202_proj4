@@ -150,67 +150,71 @@ class CityNode:
 
 
     def rotate_left_ne_sw(self):
-        new_root = self.children["sw"]                 # new c node
-        self.children["sw"] = new_root.children["ne"]  # set og node's right child to new c node's left child
-        if self.children["sw"] != None:                # if og node right child is not None
-            self.children["sw"].parent = self              # set og node's right child'parent pointer to og node
-        new_root.children["ne"] = self                 # sef c node left child to og node
-        new_root.parent = self.parent                  # set c node's parent pointer to og node's parent
-        if self.has_parent():
-            if self.parent.children["ne"] == self:         # if og node is a left child
-                self.parent.children["ne"] = new_root          # set og node parent l child to c node
-        if self.has_parent():
-            if self.parent.children["sw"] == self:       # if og node is a right child
-                self.parent.children["sw"] = new_root          # set og node parent r child to c node
-        self.parent = new_root                         # seet og node's parent pointer to new c node
+        if self.children["sw"] != None:
+            new_root = self.children["sw"]                 # new c node
+            self.children["sw"] = new_root.children["ne"]  # set og node's right child to new c node's left child
+            if self.children["sw"] != None:                # if og node right child is not None
+                self.children["sw"].parent = self              # set og node's right child'parent pointer to og node
+            new_root.children["ne"] = self                 # sef c node left child to og node
+            new_root.parent = self.parent                  # set c node's parent pointer to og node's parent
+            if self.has_parent():
+                if self.parent.children["ne"] == self:         # if og node is a left child
+                    self.parent.children["ne"] = new_root          # set og node parent l child to c node
+            if self.has_parent():
+                if self.parent.children["sw"] == self:       # if og node is a right child
+                    self.parent.children["sw"] = new_root          # set og node parent r child to c node
+            self.parent = new_root                         # seet og node's parent pointer to new c node
 
 
     def rotate_left_nw_se(self):
-        new_root = self.children["se"]
-        self.children["se"] = new_root.children["nw"]
         if self.children["se"] != None:
-            self.children["se"].parent = self
-        new_root.children["nw"] = self
-        new_root.parent = self.parent
-        if self.has_parent():
-            if self.parent.children["nw"] == self:
-                self.parent.children["nw"] = new_root
-        if self.has_parent():
-            if self.parent.children["se"] == self:
-                self.parent.children["se"] = new_root
-        self.parent = new_root
+            new_root = self.children["se"]
+            self.children["se"] = new_root.children["nw"]
+            if self.children["se"] != None:
+                self.children["se"].parent = self
+            new_root.children["nw"] = self
+            new_root.parent = self.parent
+            if self.has_parent():
+                if self.parent.children["nw"] == self:
+                    self.parent.children["nw"] = new_root
+            if self.has_parent():
+                if self.parent.children["se"] == self:
+                    self.parent.children["se"] = new_root
+            self.parent = new_root
 
 
     def rotate_right_ne_sw(self):
-        new_root = self.children["ne"]
-        self.children["ne"] = new_root.children["sw"]
         if self.children["ne"] != None:
-            self.children["ne"].parent = self
-        new_root.children["sw"] = self
-        new_root.parent = self.parent
-        if self.has_parent():
-            if self.parent.children["ne"] == self:
-                self.parent.children["ne"] = new_root
-        if self.has_parent():
-            if self.parent.children["sw"] == self:
-                self.parent.children["sw"] = new_root
-        self.parent = new_root
+            new_root = self.children["ne"]
+            self.children["ne"] = new_root.children["sw"]
+            if self.children["ne"] != None:
+                self.children["ne"].parent = self
+            new_root.children["sw"] = self
+            new_root.parent = self.parent
+            if self.has_parent():
+                if self.parent.children["ne"] == self:
+                    self.parent.children["ne"] = new_root
+            if self.has_parent():
+                if self.parent.children["sw"] == self:
+                    self.parent.children["sw"] = new_root
+            self.parent = new_root
 
 
     def rotate_right_nw_se(self):
-        new_root = self.children["nw"]
-        self.children["nw"] = new_root.children["se"]
         if self.children["nw"] != None:
-            self.children["nw"].parent = self
-        new_root.children["se"] = self
-        new_root.parent = self.parent
-        if self.has_parent():
-            if self.parent.children["nw"] == self:
-                self.parent.children["nw"] = new_root
-        if self.has_parent():
-            if self.parent.children["se"] == self:
-                self.parent.children["se"] = new_root
-        self.parent = new_root
+            new_root = self.children["nw"]
+            self.children["nw"] = new_root.children["se"]
+            if self.children["nw"] != None:
+                self.children["nw"].parent = self
+            new_root.children["se"] = self
+            new_root.parent = self.parent
+            if self.has_parent():
+                if self.parent.children["nw"] == self:
+                    self.parent.children["nw"] = new_root
+            if self.has_parent():
+                if self.parent.children["se"] == self:
+                    self.parent.children["se"] = new_root
+            self.parent = new_root
 
 
     def right_left_ne_sw(self, r_child):
@@ -367,16 +371,18 @@ class CountryTable:
         elif self.bucket_list[h_i].country == new_node.country:
             self.bucket_list[h_i].add_city(new_node)
             self.bucket_list[h_i] = new_node.find_top_node(new_node)
-        """
         else:
             next_h_i = self.rehash(h_i)
-            start_h_i
-            while self.bucket_list[next_h_i] != None and self.\
-                bucket_list[next_h_i].country_code != new_node.country_code:
+            start_h_i = next_h_i
+            while self.bucket_list[next_h_i] != None and \
+                self.bucket_list[next_h_i].country != new_node.country:
                 next_h_i = self.rehash(next_h_i)
-                if next_h_i == start_h_i:
+                if start_h_i == next_h_i:
                     break
-        """
+            if self.bucket_list[next_h_i] == None:
+                self.bucket_list[next_h_i] = new_node
+            elif self.bucket_list[next_h_i].country == new_node.country:
+                self.bucket_list[next_h_i].add_city(new_node)
 
  
     def put_node(self, city_name, country_code, lat, lon): 
@@ -389,6 +395,9 @@ class CountryTable:
             self.resize()
 
 
+#def find_travel_distance(table, lat_x, lon_x, lat_y, lon_y):
+    
+    
 
 
 

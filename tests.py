@@ -1529,9 +1529,15 @@ class TestBucketeList(unittest.TestCase):
         table.put_node_branch(1, node)
         table.put_node_branch(2, node)
 
+        table = CountryTable(10000)
 
-
-        table = CountryTable(128515)
+        i = table.hash("zz")
+        table.put_node("zz", "zz", 7, 8)
+        self.assertEqual(table.bucket_list[i].name, "zz")
+        i = table.hash("pz")
+        i = table.rehash(i)
+        table.put_node("pz", "pz", 9, 10)
+        self.assertEqual(table.bucket_list[i].name, "pz")
 
         i = table.hash("cc")
         table.put_node("a", "cc", 1, 2)
@@ -1539,11 +1545,49 @@ class TestBucketeList(unittest.TestCase):
         table.put_node("b", "cc", 3, 4)
         self.assertEqual(table.bucket_list[i].name, "a")
         self.assertEqual(table.bucket_list[i].children["ne"].name, "b")
+
         table.num_items = 128514
         table.put_node("c", "cc", 5, 6)
-        self.assertEqual(table.size, 257031)
+        self.assertEqual(table.size, 20001)
+
+        table = CountryTable(5)
+
+        a = CityNode("a", "aa", 0, 0)
+        b = CityNode("b", "bb", 0, 0)
+        c = CityNode("c", "cc", 0, 0)
+        d = CityNode("d", "dd", 0, 0)
+        e = CityNode("e", "ee", 0, 0)
+        f = CityNode("f", "ff", 0, 0)
+        g = CityNode("g", "gg", 0, 0)
+        h = CityNode("h", "dd", 0, 0)
+
+        table.put_node("a", "aa", 0, 0)
+        table.put_node_branch(table.hash("bb"), b)
+        table.num_items = 0
+        table.put_node_branch(table.hash("cc"), c)
+        table.num_items = 0
+        table.put_node_branch(table.hash("dd"), d)
+        table.num_items = 0
+        table.put_node_branch(table.hash("ee"), e)
+        table.num_items = 0
+        table.put_node_branch(table.hash("ff"), f)
+        table.num_items = 0
+        table.put_node_branch(table.hash("gg"), g)
+        table.num_items = 0
+        table.put_node_branch(table.hash("cc"), h)
+        table.num_items = 0
+        for item in table.bucket_list:
+            print(table.bucket_list.index(item), item.name)
 
 
+        #for u in range(97, 123):
+        #    for v in range(97, 123):
+        #        for w in range(97, 123):
+        #            name = chr(u) + chr(v) + chr(w)
+        #            country = chr(v) + chr(w)
+        #            lat = u + v + w
+        #            lon = u + v + w
+        #            table.put_node(name, country, lat, lon)
 
 
 
